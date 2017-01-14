@@ -1,3 +1,6 @@
 # Example images
 
-Does markdown work in subfolders? Let's try it.
+Output images from the [EXAMPLES] on how to use graph_generator.py.
+
+
+[examples]: (../README.MD)
