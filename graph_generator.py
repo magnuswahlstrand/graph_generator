@@ -92,11 +92,11 @@ class GraphGenerator():
         plt.show()
 
 valid_graph_types = ['bar','line']
-
+types_help_text = "%s or %s" % (",".join(valid_graph_types[:-1]), valid_graph_types[-1])
 def parse_graph_type(s):
     
     if not s in valid_graph_types:
-        raise argparse.ArgumentTypeError("Graph type has to be one of the following: %s or " % (",".join(valid_graph_types[:-1], valid_graph_types[-1])))
+        raise argparse.ArgumentTypeError("Graph type has to be one of the following: %s" % types_help_text)
     else:
         return s
 
@@ -149,15 +149,13 @@ if __name__ == '__main__':
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')
 
-
-    parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None)
+    parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None, help=types_help_text)
     
     parser.add_argument('--sharex', action="store_true", required=False, default=True)
     parser.add_argument('--sharey', action="store_true", required=False, default=False)
-    parser.add_argument('--sub-plots', dest="subplot", action="store_true", required=False)
+    parser.add_argument('--sub-plots', dest="subplot", action="store_true", required=False, help="Divides data sets over multiple graphs")
 
     args = parser.parse_args()
-    print(args.type)
     print(args.data)
 
     small_plot = GraphGenerator(args)

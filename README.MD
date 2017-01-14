@@ -32,16 +32,39 @@ optional arguments:
 ```
 ### Examples
 
-Examples:
+Example: *Simple graph*:
 ```bash
 # Data for the y-axis
 DATA="10,8,15,17,1"
 python graph_generator.py --data-set "$DATA"
+
+display graph.png
 ```
-Output:
 
 ![Example 1](/images/example_1.png)
 
+```bash
+# Get number of lines per file in this repo
+#   find * -type f  - list all files (not directories) in repo
+#   xargs wc -l     - get number of lines in files
+#   tr -s ' '		- turn multiple spaces into single ones
+#   cut -f2 -d" "   - remove file name
+# 	tr "\n" ","		- turn line feed seperated list into commas separated list
+FILE_CHARS=$(find * -type f | xargs wc -l | tr -s ' ' | cut -f2 -d" " | tr "\n" ",")
+
+#Remove trailing comma
+FILE_CHARS=${FILE_CHARS::-1}
+
+#Set nice title for the graph
+TITLE="# of lines in file"
+
+# Create graph
+python graph_generator.py --data-set "$FILE_CHARS;$TITLE" --filename images/bar_graph.png --graph-type bar
+
+display images/bar_graph.png
+
+```
+![Bar graph](/images/bar_graph.png)
 
 ## Possible improvements
 * Use strings on the x-axis instead of numbers
