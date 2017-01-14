@@ -32,7 +32,7 @@ optional arguments:
 ```
 ### Examples
 
-Example: *Simple graph*:
+**Example: Simple graph***
 ```bash
 # Data for the y-axis
 DATA="10,8,15,17,1"
@@ -42,6 +42,8 @@ display graph.png
 ```
 
 ![Example 1](/images/example_1.png)
+
+**Example: Bar chart***
 
 ```bash
 # Get number of lines per file in this repo
