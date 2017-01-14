@@ -111,8 +111,9 @@ python graph_generator.py --data-set "115,22,113;My score,Your score,Her score;U
 
 ## Possible improvements
 * ~~Use strings on the x-axis instead of numbers~~
+* ~~Being able to specify color, width and type of line or bar charts~~
+* ~~Combine multiple type of charts~~
 * Automatically choose colors of bar charts
 * Add bars side by side
-* Being able to specify color, width and type of line or bar charts
 * Allow other type of charts
 
