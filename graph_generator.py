@@ -1,5 +1,10 @@
+import os
 import matplotlib
-matplotlib.use('Agg')
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -97,7 +102,9 @@ class GraphGenerator():
         
     def save_and_show(self, args):
         plt.savefig(self.filename)
-        plt.show()
+        
+        if not args.no_show:
+            plt.show()
 
 valid_graph_types = ['bar','line']
 types_help_text = "%s or %s" % (",".join(valid_graph_types[:-1]), valid_graph_types[-1])
@@ -242,6 +249,9 @@ if __name__ == '__main__':
     parser.add_argument('--sharex', action="store_true", required=False, default=False)
     parser.add_argument('--sharey', action="store_true", required=False, default=False)
     parser.add_argument('--sub-plots', dest="subplot", action="store_true", required=False, help="Divides data sets over multiple graphs")
+
+    # Don't show graph upon creation
+    parser.add_argument('--no-show', dest="no_show", action="store_true", required=False, default=False)
 
     args = parser.parse_args()
 
