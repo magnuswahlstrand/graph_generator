@@ -1,4 +1,5 @@
 import os
+import json
 import matplotlib
 if os.environ.get('DISPLAY','') == '':
     print('no display found. Using non-interactive Agg backend')
@@ -46,7 +47,7 @@ class GraphGenerator():
 
             # Type of graph
             if args.type == 'bar':
-                axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label,color=d['color'])
+                axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label,color=d['color'], **d['kwargs'])
 
                 # Set labels and position of labels
                 if d.has_key('type') and d['type'] == 'x_string':
@@ -54,7 +55,7 @@ class GraphGenerator():
                     axes[i].set_xticklabels(d['x_ticks'])
                     plt.xticks(rotation=d['x_ticks_rotate'])
             else:
-                axes[i].plot(d['x'],d['y'],label=label,color=d['color'])
+                axes[i].plot(d['x'],d['y'],label=label,color=d['color'],**d['kwargs'])
                 
             
             if args.subplot:
@@ -106,14 +107,6 @@ class GraphGenerator():
         if not args.no_show:
             plt.show()
 
-valid_graph_types = ['bar','line']
-types_help_text = "%s or %s" % (",".join(valid_graph_types[:-1]), valid_graph_types[-1])
-def parse_graph_type(s):
-    
-    if not s in valid_graph_types:
-        raise argparse.ArgumentTypeError("Graph type has to be one of the following: %s" % types_help_text)
-    else:
-        return s
 
 def get_bar_formats(y):
     # Create an array for the position of the bar labels (x_ticks)5
@@ -135,6 +128,20 @@ def get_rotatation_angle(x_ticks):
         return 45
     else:
         return 75
+
+
+def parse_opt(s):
+    parsed_opt = json.loads(s)
+    return parsed_opt
+
+valid_graph_types = ['bar','line']
+types_help_text = "%s or %s" % (",".join(valid_graph_types[:-1]), valid_graph_types[-1])
+def parse_graph_type(s):
+    
+    if not s in valid_graph_types:
+        raise argparse.ArgumentTypeError("Graph type has to be one of the following: %s" % types_help_text)
+    else:
+        return s
 
 def parse_data_args(s):
     #try:   
@@ -240,6 +247,8 @@ if __name__ == '__main__':
                         help='y and x and TITLE separated by \';\' \nMultiple --data-set is allowed\nExamples:\t\n--data-set 1,4,5;6,1,2;THROUGHPUT\t\n--data-set 1,4,5;delay\t\n--data-set 1,4,5;6,1,2\t\n\n')
 
     parser.add_argument('-c','--color', action="append")
+    parser.add_argument('-o','--options', action="append", type=parse_opt)
+
 
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')
@@ -256,15 +265,17 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     for i, d in enumerate(args.data):
-        if len(args.color) > i:
+        if args.color and len(args.color) > i:
             d['color'] = args.color[i]
         else:
             d['color'] = 'blue'
 
-    print(args.data)
-        
+        if args.options and len(args.options) > i:
+            d['kwargs'] = args.options[i]
+        else:
+            d['kwargs'] = {}
 
-    print(args.color)
+    print(args.data)
 
     small_plot = GraphGenerator(args)
     small_plot.save_and_show(args)
