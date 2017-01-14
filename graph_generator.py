@@ -36,7 +36,13 @@ class GraphGenerator():
             else:
                 label = 'Data %i' % (line_number + 1)
 
-            axes[i].plot(d['x'],d['y'],label=label)
+
+            # Type of graph
+            if args.type == 'bar':
+                axes[i].bar(d['x'],d['y'],label=label)
+            else:
+                axes[i].plot(d['x'],d['y'],label=label)
+                
             
             if args.subplot:
                 i += 1
@@ -84,7 +90,16 @@ class GraphGenerator():
     def save_and_show(self, args):
         plt.savefig(self.filename)
         plt.show()
+
+valid_graph_types = ['bar','line']
+
+def parse_graph_type(s):
     
+    if not s in valid_graph_types:
+        raise argparse.ArgumentTypeError("Graph type has to be one of the following: %s or " % (",".join(valid_graph_types[:-1], valid_graph_types[-1])))
+    else:
+        return s
+
 def parse_data_args(s):
     try:   
         
@@ -111,10 +126,9 @@ def parse_data_args(s):
                     'y': [float(i) for i in y.split(',')],
                     'label' : label }
         else:
-            raise argparse.ArgumentTypeError("Input should either be --data x0,x1 or --data x0,x1;y0,y1")
-
+            raise argparse.ArgumentTypeError("Input should either be --data-set \"y0\", --data-set \"y0;x0\", --data-set \"y0;TITLE\" or --data-set \"y0;x0;TITLE\"")
     except:
-        raise argparse.ArgumentTypeError("Input should either be --data x0,x1 or --data x0,x1;y0,y1")
+        raise argparse.ArgumentTypeError("Input should either be --data-set \"y0\", --data-set \"y0;x0\", --data-set \"y0;TITLE\" or --data-set \"y0;x0;TITLE\"")
 
 # graph_generator.py --title "Magnus plot" --labels "x" --data 1,3,1,3,1;1,2,3,4,5 
 if __name__ == '__main__':
@@ -130,29 +144,22 @@ if __name__ == '__main__':
     parser.add_argument('--title', action='append', required=False, default=[])
 
     parser.add_argument('--data-set', dest="data", type=parse_data_args, required=True, action="append",
-                        help='y and x and label separated by \';\' examples: (--data-set 1,4,5;6,1,2;THROUGHPUT --data-set 1,4,5;delay, --data-set 1,4,5;6,1,2). Multiple --data-set is allowed.')
+                        help='y and x and TITLE separated by \';\' examples: (--data-set 1,4,5;6,1,2;THROUGHPUT --data-set 1,4,5;delay, --data-set 1,4,5;6,1,2). Multiple --data-set is allowed.')
 
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')
 
+
+    parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None)
+    
     parser.add_argument('--sharex', action="store_true", required=False, default=True)
     parser.add_argument('--sharey', action="store_true", required=False, default=False)
     parser.add_argument('--sub-plots', dest="subplot", action="store_true", required=False)
 
     args = parser.parse_args()
+    print(args.type)
     print(args.data)
-    #args = lambda: None
-    #args.xlim = None
-    #args.ylim = None
-    #args.title = 'Magnus plot'
-    #args.xlabel = "Seconds"
-    #args.ylabel = "Throughput"
-    #args.filename = 'tpt.png'
-    
-    #args.data = []
-    #args.data.append(parse_data_args("1,3,1,3,1;1,2,3,4,5"))
-    #args.data.append(parse_data_args("4,3,4,2,4"))
-    
+
     small_plot = GraphGenerator(args)
     small_plot.save_and_show(args)
     
