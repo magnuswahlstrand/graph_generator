@@ -46,7 +46,7 @@ class GraphGenerator():
 
 
             # Type of graph
-            if args.type == 'bar':
+            if d['type'] == 'bar':
                 axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label,color=d['color'], **d['kwargs'])
 
                 # Set labels and position of labels
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')
 
-    parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None, help=types_help_text)
+    parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None, action="append", help=types_help_text)
     
     parser.add_argument('--sharex', action="store_true", required=False, default=False)
     parser.add_argument('--sharey', action="store_true", required=False, default=False)
@@ -270,12 +270,20 @@ if __name__ == '__main__':
         else:
             d['color'] = 'blue'
 
+        if args.type and len(args.type) > i:
+            d['type'] = args.type[i]
+        else:
+            d['type'] = 'line'
+
         if args.options and len(args.options) > i:
             d['kwargs'] = args.options[i]
         else:
             d['kwargs'] = {}
 
-    print(args.data)
+
+        print d
+
+    #print(args.data)
 
     small_plot = GraphGenerator(args)
     small_plot.save_and_show(args)

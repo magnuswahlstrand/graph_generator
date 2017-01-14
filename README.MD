@@ -96,7 +96,18 @@ display images/bar_graph2.png
 ```
 ![Bar graph](/images/bar_graph2.png)
 
+**Example: option/kwargs
+Pass any options to your graph that is supported by matplotlib. [Available Line options here]
 
+```bash
+python graph_generator.py --data-set "115,22,113;My score,Your score,Her score;Ugly boxes" -o '{"linewidth":10, "linestyle": "dashed", "facecolor":"green"}' -c b --graph-type bar --data-set "50,60,40;Ugly line" --graph-type line -o '{"linewidth":5, "linestyle": ":", "dash_joinstyle" : "round"}'
+
+```
+
+![Bar graph](/images/ugly_graph.png)
+
+
+[available line options here]: http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D
 
 ## Possible improvements
 * ~~Use strings on the x-axis instead of numbers~~
@@ -104,5 +115,4 @@ display images/bar_graph2.png
 * Add bars side by side
 * Being able to specify color, width and type of line or bar charts
 * Allow other type of charts
-
 
