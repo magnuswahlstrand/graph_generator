@@ -41,7 +41,7 @@ class GraphGenerator():
 
             # Type of graph
             if args.type == 'bar':
-                axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label)
+                axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label,color=d['color'])
 
                 # Set labels and position of labels
                 if d.has_key('type') and d['type'] == 'x_string':
@@ -49,7 +49,7 @@ class GraphGenerator():
                     axes[i].set_xticklabels(d['x_ticks'])
                     plt.xticks(rotation=d['x_ticks_rotate'])
             else:
-                axes[i].plot(d['x'],d['y'],label=label)
+                axes[i].plot(d['x'],d['y'],label=label,color=d['color'])
                 
             
             if args.subplot:
@@ -81,12 +81,10 @@ class GraphGenerator():
             # Set x-axis range
             if args.xlim:
                 ax.set_xlim( args.xlim )            
-                pass
 
             # Set y-axis range
             if args.ylim:
                 ax.set_ylim( args.ylim )            
-                pass
 
 
             ax.legend()
@@ -234,17 +232,29 @@ if __name__ == '__main__':
     parser.add_argument('--data-set', dest="data", type=parse_data_args, required=True, action="append",
                         help='y and x and TITLE separated by \';\' \nMultiple --data-set is allowed\nExamples:\t\n--data-set 1,4,5;6,1,2;THROUGHPUT\t\n--data-set 1,4,5;delay\t\n--data-set 1,4,5;6,1,2\t\n\n')
 
+    parser.add_argument('-c','--color', action="append")
+
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')
 
     parser.add_argument('--graph-type', dest="type", type=parse_graph_type, default=None, help=types_help_text)
     
-    parser.add_argument('--sharex', action="store_true", required=False, default=True)
+    parser.add_argument('--sharex', action="store_true", required=False, default=False)
     parser.add_argument('--sharey', action="store_true", required=False, default=False)
     parser.add_argument('--sub-plots', dest="subplot", action="store_true", required=False, help="Divides data sets over multiple graphs")
 
     args = parser.parse_args()
+
+    for i, d in enumerate(args.data):
+        if len(args.color) > i:
+            d['color'] = args.color[i]
+        else:
+            d['color'] = 'blue'
+
     print(args.data)
+        
+
+    print(args.color)
 
     small_plot = GraphGenerator(args)
     small_plot.save_and_show(args)
