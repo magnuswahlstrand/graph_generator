@@ -68,8 +68,37 @@ display images/bar_graph.png
 ```
 ![Bar graph](/images/bar_graph.png)
 
+
+**Example: Bar chart (improved)**
+Add text labels on the x-axis
+```bash
+# Get number of lines per file in this repo
+FILE_CHARS=$(find * -type f | xargs wc -l | grep -v total | tr -s ' ' | cut -f2 -d" " | tr "\n" ",")
+FILE_NAMES=$(find * -type f | tr '\n' ',')
+
+#Remove trailing comma
+FILE_CHARS=${FILE_CHARS::-1}
+FILE_NAMES=${FILE_NAMES::-1}
+
+#Set nice title for the graph
+TITLE="# of lines in file"
+
+# Create graph
+python graph_generator.py --data-set "$FILE_CHARS;$FILE_NAMES;$TITLE" --filename images/bar_graph2.png --graph-type bar
+
+display images/bar_graph2.png
+
+
+```
+![Bar graph](/images/bar_graph2.png)
+
+
+
 ## Possible improvements
-* Use strings on the x-axis instead of numbers
+* ~~Use strings on the x-axis instead of numbers~~
 * Automatically choose colors of bar charts
+* Add bars side by side
 * Being able to specify color, width and type of line or bar charts
 * Allow other type of charts
+
+

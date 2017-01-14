@@ -46,6 +46,7 @@ class GraphGenerator():
                 if d.has_key('type') and d['type'] == 'x_string':
                     axes[i].set_xticks(d['x_ticks_pos'])
                     axes[i].set_xticklabels(d['x_ticks'])
+                    plt.xticks(rotation=d['x_ticks_rotate'])
             else:
                 axes[i].plot(d['x'],d['y'],label=label)
                 
@@ -117,6 +118,18 @@ def get_bar_formats(y):
 def get_filler_x_from_y(y):
     return range(len(y))
 
+def get_rotatation_angle(x_ticks):
+
+    max_tick_length = max(map(len, x_ticks ))
+    # Rotate if ticks are longer than 5 characters
+
+    if max_tick_length <= 5:
+        return 0
+    elif max_tick_length <= 8:
+        return 45
+    else:
+        return 75
+
 def parse_data_args(s):
     #try:   
         
@@ -137,21 +150,21 @@ def parse_data_args(s):
             except ValueError as e:
 
                 y0 = [float(i) for i in y.split(',')]
-                x_labels = x.split(',')
+                x_ticks = x.split(',')
 
                 # If y and x are same length, assume 2nd value is ment as x-values
 
-                if len(y0) == len(x_labels):
+                if len(y0) == len(x_ticks):
                     # Both are not number series
                     # Try y0;x_labels
                     #   y0 = float
                     #   x_labels = strings
-
                     return { 
                         'x': get_filler_x_from_y(y0),
                         'y': y0,
-                        'x_ticks' : x_labels,
+                        'x_ticks' : x_ticks,
                         'x_ticks_pos' : get_bar_formats(y0),
+                        'x_ticks_rotate' : get_rotatation_angle(x_ticks),
                         'type': 'x_string'
                         }
 
@@ -185,11 +198,13 @@ def parse_data_args(s):
                 #   y0 = float
                 #   x_labels = strings
                 #   label = string
+                x_ticks = x.split(',')
                 return {
                         'y': y0,
                         'x': get_filler_x_from_y(y0),
-                        'x_ticks' : x.split(','),
+                        'x_ticks' : x_ticks,
                         'x_ticks_pos' : get_bar_formats(y0),
+                        'x_ticks_rotate' : get_rotatation_angle(x_ticks),
                         'type': 'x_string',
                         'label' : label }
 
