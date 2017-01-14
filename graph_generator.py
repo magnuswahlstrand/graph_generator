@@ -4,6 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
+from argparse import RawTextHelpFormatter
 
 
 BAR_WIDTH = 0.5
@@ -220,7 +221,7 @@ def parse_data_args(s):
 # graph_generator.py --title "Magnus plot" --labels "x" --data 1,3,1,3,1;1,2,3,4,5 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=RawTextHelpFormatter)
 
     parser.add_argument('--xlabel', action="store", required=False)
     parser.add_argument('--ylabel', action="store", required=False)
@@ -231,7 +232,7 @@ if __name__ == '__main__':
     parser.add_argument('--title', action='append', required=False, default=[])
 
     parser.add_argument('--data-set', dest="data", type=parse_data_args, required=True, action="append",
-                        help='y and x and TITLE separated by \';\' examples: (--data-set 1,4,5;6,1,2;THROUGHPUT --data-set 1,4,5;delay, --data-set 1,4,5;6,1,2). Multiple --data-set is allowed.')
+                        help='y and x and TITLE separated by \';\' \nMultiple --data-set is allowed\nExamples:\t\n--data-set 1,4,5;6,1,2;THROUGHPUT\t\n--data-set 1,4,5;delay\t\n--data-set 1,4,5;6,1,2\t\n\n')
 
     parser.add_argument('--filename', "-f", action='store', required=False, default='graph.png' ,
         help='Filename to save. Default: graph.png')

@@ -9,8 +9,8 @@ Purpose was to create a simple way of generating graphs using one liners in the 
 usage: graph_generator.py [-h] [--xlabel XLABEL] [--ylabel YLABEL]
                           [--xlim XLIM XLIM] [--ylim YLIM YLIM]
                           [--title TITLE] --data-set DATA
-                          [--filename FILENAME] [--sharex] [--sharey]
-                          [--sub-plots]
+                          [--filename FILENAME] [--graph-type TYPE] [--sharex]
+                          [--sharey] [--sub-plots]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -19,15 +19,19 @@ optional arguments:
   --xlim XLIM XLIM
   --ylim YLIM YLIM
   --title TITLE
-  --data-set DATA       y and x and label separated by ';' examples: (--data-
-                        set 1,4,5;6,1,2;THROUGHPUT --data-set 1,4,5;delay,
-                        --data-set 1,4,5;6,1,2). Multiple --data-set is
-                        allowed.
+  --data-set DATA       y and x and TITLE separated by ';' 
+                        Multiple --data-set is allowed
+                        Examples:	
+                        --data-set 1,4,5;6,1,2;THROUGHPUT	
+                        --data-set 1,4,5;delay	
+                        --data-set 1,4,5;6,1,2	
+                        
   --filename FILENAME, -f FILENAME
                         Filename to save. Default: graph.png
+  --graph-type TYPE     bar or line
   --sharex
   --sharey
-  --sub-plots
+  --sub-plots           Divides data sets over multiple graphs
 
 ```
 ### Examples
