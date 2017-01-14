@@ -50,7 +50,7 @@ class GraphGenerator():
                 axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label,color=d['color'], **d['kwargs'])
 
                 # Set labels and position of labels
-                if d.has_key('type') and d['type'] == 'x_string':
+                if d.has_key('x_ticks'):
                     axes[i].set_xticks(d['x_ticks_pos'])
                     axes[i].set_xticklabels(d['x_ticks'])
                     plt.xticks(rotation=d['x_ticks_rotate'])
@@ -178,7 +178,6 @@ def parse_data_args(s):
                         'x_ticks' : x_ticks,
                         'x_ticks_pos' : get_bar_formats(y0),
                         'x_ticks_rotate' : get_rotatation_angle(x_ticks),
-                        'type': 'x_string'
                         }
 
                 else:
@@ -218,7 +217,6 @@ def parse_data_args(s):
                         'x_ticks' : x_ticks,
                         'x_ticks_pos' : get_bar_formats(y0),
                         'x_ticks_rotate' : get_rotatation_angle(x_ticks),
-                        'type': 'x_string',
                         'label' : label }
 
             
