@@ -6,6 +6,8 @@ import numpy as np
 import argparse
 
 
+BAR_WIDTH = 0.5
+
 class GraphGenerator():
 
     def __init__(self, args):
@@ -29,7 +31,6 @@ class GraphGenerator():
         
         i = 0
         for line_number, d in enumerate(args.data):
-            print(i)
 
             if 'label' in d:
                 label = d['label']
@@ -39,7 +40,12 @@ class GraphGenerator():
 
             # Type of graph
             if args.type == 'bar':
-                axes[i].bar(d['x'],d['y'],label=label)
+                axes[i].bar(d['x'],d['y'], BAR_WIDTH,label=label)
+
+                # Set labels and position of labels
+                if d.has_key('type') and d['type'] == 'x_string':
+                    axes[i].set_xticks(d['x_ticks_pos'])
+                    axes[i].set_xticklabels(d['x_ticks'])
             else:
                 axes[i].plot(d['x'],d['y'],label=label)
                 
@@ -73,10 +79,12 @@ class GraphGenerator():
             # Set x-axis range
             if args.xlim:
                 ax.set_xlim( args.xlim )            
+                pass
 
             # Set y-axis range
             if args.ylim:
                 ax.set_ylim( args.ylim )            
+                pass
 
 
             ax.legend()
@@ -100,11 +108,19 @@ def parse_graph_type(s):
     else:
         return s
 
+def get_bar_formats(y):
+    # Create an array for the position of the bar labels (x_ticks)5
+    ind = np.arange(len(y))
+    ind = ind + BAR_WIDTH / 2.0
+    return ind
+
+def get_filler_x_from_y(y):
+    return range(len(y))
+
 def parse_data_args(s):
-    try:   
+    #try:   
         
         data = s.split(';')
-        
         if len(data) == 1:
             y = data[0]
             return {'y': [float(i) for i in y.split(',')],
@@ -112,23 +128,79 @@ def parse_data_args(s):
         elif len(data) == 2:
             y, x = data
             try:
+                # Try y0;x0
+                #   y0 = float
+                #   x0 = float
                 return {'x': [float(i) for i in x.split(',')],
                         'y': [float(i) for i in y.split(',')]}
                 
             except ValueError as e:
-                return {'label': x,
-                        'x': range(len(y.split(','))),
-                        'y': [float(i) for i in y.split(',')]}
+
+                y0 = [float(i) for i in y.split(',')]
+                x_labels = x.split(',')
+
+                # If y and x are same length, assume 2nd value is ment as x-values
+
+                if len(y0) == len(x_labels):
+                    # Both are not number series
+                    # Try y0;x_labels
+                    #   y0 = float
+                    #   x_labels = strings
+
+                    return { 
+                        'x': get_filler_x_from_y(y0),
+                        'y': y0,
+                        'x_ticks' : x_labels,
+                        'x_ticks_pos' : get_bar_formats(y0),
+                        'type': 'x_string'
+                        }
+
+                else:
+                    # Assume y0;label
+                    #   y0 = float
+                    #   label = strings
+
+                    label = x
+                    return {
+                        'x': get_filler_x_from_y(y0),
+                        'y': y0, 
+                        'label': label}
+
                 
         elif len(data) == 3:
             y, x, label = data
-            return {'x': [float(i) for i in x.split(',')],
-                    'y': [float(i) for i in y.split(',')],
-                    'label' : label }
+
+            y0 = [float(i) for i in y.split(',')]
+            try:
+                # Try y0;x0;label
+                #   y0 = float
+                #   x0 = float
+                #   label = strings
+                return {'x': [float(i) for i in x.split(',')],
+                        'y': y0,
+                        'label' : label }
+            
+            except ValueError as e:
+                # Try y0;x_labels;label
+                #   y0 = float
+                #   x_labels = strings
+                #   label = string
+                return {
+                        'y': y0,
+                        'x': get_filler_x_from_y(y0),
+                        'x_ticks' : x.split(','),
+                        'x_ticks_pos' : get_bar_formats(y0),
+                        'type': 'x_string',
+                        'label' : label }
+
+            
+
+
+
         else:
             raise argparse.ArgumentTypeError("Input should either be --data-set \"y0\", --data-set \"y0;x0\", --data-set \"y0;TITLE\" or --data-set \"y0;x0;TITLE\"")
-    except:
-        raise argparse.ArgumentTypeError("Input should either be --data-set \"y0\", --data-set \"y0;x0\", --data-set \"y0;TITLE\" or --data-set \"y0;x0;TITLE\"")
+    #except:
+    #    raise argparse.ArgumentTypeError("Input should either be --data-set \"y0\", --data-set \"y0;x0\", --data-set \"y0;TITLE\" or --data-set \"y0;x0;TITLE\"")
 
 # graph_generator.py --title "Magnus plot" --labels "x" --data 1,3,1,3,1;1,2,3,4,5 
 if __name__ == '__main__':
